@@ -5,13 +5,13 @@ int my_cmp_bigger(int a, int b) //比较函数
     return a>b?1:0;
 }
 
-void PileInit(QPile pile)  //初始化
+void PileInit(QPile pile, int (*cmp)(int, int))  //初始化
 {
     assert(pile);
     pile->capacity = 0;
     pile->datas = NULL;
     pile->size = 0;
-    pile->function = my_cmp_bigger;
+    pile->function = cmp;
 }
 
 static void PileEnlargeCapacity(QPile pile) //扩大堆的容量
@@ -22,7 +22,7 @@ static void PileEnlargeCapacity(QPile pile) //扩大堆的容量
    if (cache != NULL)
    {
        pile->datas = cache;
-       pile->capacity *=2;
+       pile->capacity *= 2;
    }   
    else
    {
@@ -172,7 +172,7 @@ void PileTest() //测试
     Pile pile;
     DataType datas[] = {53, 17, 78, 9, 45, 65, 87, 23, 31};
     int i = 0;
-    PileInit(&pile);
+    PileInit(&pile, my_cmp_bigger);
     PileCreat(&pile, datas, sizeof(datas)/sizeof(DataType));
     PileInsert(&pile, 46);
     printf("堆顶元素为%d\n", GetPileTop(&pile));
@@ -183,4 +183,53 @@ void PileTest() //测试
         printf("第%d次删除堆顶元素后，还有%d个元素，此时堆顶元素为%d\n", i+1, GetPileSize(&pile), GetPileTop(&pile));
     }
     DistoryPile(&pile);
+}
+
+void PileShort(DataType a[], int len)   //堆排序
+{
+    Pile pile;
+    int i;
+    PileInit(&pile, my_cmp_bigger);
+    PileCreat(&pile, a, len);
+    for (i = 0; i<len; i++)
+    {
+        a[i] = GetPileTop(&pile);
+        DeletePileTop(&pile);
+    }
+}
+
+void TopK() //海量数据TopK问题
+{
+    int a;
+    int k;
+    int i = 0;
+    Pile pile;
+    printf("K取多少？");
+    scanf("%d%*c", &k);
+    PileInit(&pile,my_cmp_bigger);
+    
+    while(scanf("%d%*c", &a))
+    {
+        if (a == 0)
+            break;
+        if (i == 0)
+            PileCreat(&pile, &a, 1);
+        else if (i<k)
+            PileInsert(&pile, a);
+        else
+        {
+            if (a>GetPileTop(&pile))
+            {
+                DeletePileTop(&pile);
+                PileInsert(&pile, a);
+            }
+        }
+        i++;
+    }
+    while(i>1)
+    {
+        printf("%d ", GetPileTop(&pile));
+        DeletePileTop(&pile);
+        i--;
+    }
 }

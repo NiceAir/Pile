@@ -169,6 +169,10 @@
 				RelativePath=".\index.c"
 				>
 			</File>
+			<File
+				RelativePath=".\PriorityQueue.c"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Í·ÎÄ¼þ"
@@ -177,6 +181,10 @@
 			>
 			<File
 				RelativePath=".\heap.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PriorityQueue.h"
 				>
 			</File>
 		</Filter>
